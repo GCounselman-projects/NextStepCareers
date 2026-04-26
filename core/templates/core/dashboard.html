@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>My Dashboard</h1>
+</div>
+
+<div class="card">
+    <h2>Your Applications</h2>
+    {% if applications %}
+        <table>
+            <thead>
+                <tr><th>Job</th><th>Status</th><th>Submitted</th></tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.job.title }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application.created_at|date:'Y-m-d' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not submitted any applications yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

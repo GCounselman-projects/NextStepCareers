@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Edit Profile</h1>
+    <form method="post">{% csrf_token %}
+        <h2>Account Name</h2>
+        {{ user_form.as_p }}
+        <h2>Profile Details</h2>
+        {{ profile_form.as_p }}
+        <button class="button" type="submit" name="action" value="update_profile">Save Profile</button>
+    </form>
+</div>
+
+<div class="card">
+    <h1>Change Password</h1>
+    <button id="toggle-password" class="button secondary" type="button">Show password change</button>
+    <div id="password-section" style="display: none; margin-top: 16px;">
+        <form method="post">{% csrf_token %}
+            {{ password_form.as_p }}
+            <button class="button secondary" type="submit" name="action" value="change_password">Change Password</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('toggle-password');
+        const passwordSection = document.getElementById('password-section');
+        if (!toggle || !passwordSection) return;
+
+        toggle.addEventListener('click', function () {
+            const isHidden = passwordSection.style.display === 'none';
+            passwordSection.style.display = isHidden ? 'block' : 'none';
+            toggle.textContent = isHidden ? 'Hide password change' : 'Show password change';
+        });
+    });
+</script>
+{% endblock %}

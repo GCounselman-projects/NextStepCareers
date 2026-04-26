@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ job.title }}</h1>
+    <p><strong>Employer:</strong> {{ job.employer.username }}</p>
+    <p><strong>Location:</strong> {{ job.location|default:'Remote' }}</p>
+    <p>{{ job.description }}</p>
+    {% if request.user.is_authenticated %}
+        {% if request.user == job.employer %}
+            <div class="inline-actions">
+                <a class="button" href="{% url 'job_edit' job.id %}">Edit</a>
+                <a class="button secondary" href="{% url 'job_delete' job.id %}">Delete</a>
+            </div>
+        {% elif request.user.profile.role == request.user.profile.JOB_SEEKER and not has_applied %}
+            <a class="button" href="{% url 'apply_job' job.id %}">Apply Now</a>
+        {% elif has_applied %}
+            <p><strong>Status:</strong> Application submitted.</p>
+        {% endif %}
+    {% else %}
+        <p><a class="button" href="{% url 'login' %}">Log in</a> to apply.</p>
+    {% endif %}
+</div>
+{% endblock %}

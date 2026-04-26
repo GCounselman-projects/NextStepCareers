@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Notifications</h1>
+    {% if notifications %}
+        <table>
+            <thead>
+                <tr><th>Message</th><th>Received</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                    <tr>
+                        <td>{{ notification.text }}</td>
+                        <td>{{ notification.created_at|date:'Y-m-d H:i' }}</td>
+                        <td>{{ notification.is_read|yesno:'Read,Unread' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No notifications available.</p>
+    {% endif %}
+</div>
+{% endblock %}

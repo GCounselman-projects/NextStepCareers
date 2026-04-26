@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Job Applications</h1>
+    {% if applications %}
+        <table>
+            <thead>
+                <tr><th>Applicant</th><th>Job</th><th>Status</th><th>Submitted</th></tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.applicant.username }}</td>
+                        <td>{{ application.job.title }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application.created_at|date:'Y-m-d H:i' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No applications found.</p>
+    {% endif %}
+</div>
+{% endblock %}

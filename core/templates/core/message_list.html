@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Messaging</h1>
+    <p>Select a recipient to send a message.</p>
+    <div>
+        {% for user in users %}
+            <a class="button secondary" href="{% url 'send_message' user.id %}">{{ user.username }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h2>Inbox</h2>
+    {% if inbox %}
+        <table>
+            <thead>
+                <tr><th>From</th><th>Message</th><th>Received</th></tr>
+            </thead>
+            <tbody>
+                {% for message in inbox %}
+                    <tr>
+                        <td>{{ message.sender.username }}</td>
+                        <td>{{ message.content|truncatechars:100 }}</td>
+                        <td>{{ message.created_at|date:'Y-m-d H:i' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No messages in your inbox.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Sent Items</h2>
+    {% if sent_items %}
+        <table>
+            <thead>
+                <tr><th>To</th><th>Message</th><th>Sent</th></tr>
+            </thead>
+            <tbody>
+                {% for message in sent_items %}
+                    <tr>
+                        <td>{{ message.receiver.username }}</td>
+                        <td>{{ message.content|truncatechars:100 }}</td>
+                        <td>{{ message.created_at|date:'Y-m-d H:i' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sent messages yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

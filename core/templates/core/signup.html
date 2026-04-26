@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Sign Up</h1>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">Create Account</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Log in</a>.</p>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const companyField = document.querySelector('input[name="company_name"]')?.closest('p');
+        const roleRadios = document.querySelectorAll('input[name="role"]');
+        if (!companyField || roleRadios.length === 0) {
+            return;
+        }
+
+        function updateCompanyVisibility() {
+            const selectedRole = document.querySelector('input[name="role"]:checked')?.value;
+            companyField.style.display = selectedRole === 'employer' ? '' : 'none';
+        }
+
+        roleRadios.forEach(function (radio) {
+            radio.addEventListener('change', updateCompanyVisibility);
+        });
+
+        updateCompanyVisibility();
+    });
+</script>
+{% endblock %}
