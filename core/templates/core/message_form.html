@@ -1,11 +1,19 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Send Message | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>Send Message to {{ receiver.username }}</h1>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button class="button" type="submit">Send Message</button>
-    </form>
-</div>
+<section class="content-band">
+    <div class="shell form-shell">
+        <div class="form-card">
+            <p class="eyebrow">Messaging</p>
+            <h1>Send message to {{ receiver.profile.display_name }}</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="button" type="submit">Send message</button>
+            </form>
+        </div>
+    </div>
+</section>
 {% endblock %}

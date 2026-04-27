@@ -1,7 +1,17 @@
+import re
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+
+def format_employer_name(value):
+    cleaned = re.sub(r"[_-]+", " ", value or "")
+    cleaned = " ".join(cleaned.split())
+    if not cleaned:
+        return ""
+    return " ".join(word[:1].upper() + word[1:] for word in cleaned.split())
 
 
 class Profile(models.Model):
@@ -22,13 +32,28 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.get_role_display()})"
+        return f"{self.display_name} ({self.get_role_display()})"
+
+    @property
+    def employer_name(self):
+        return format_employer_name(self.company_name or self.user.username)
+
+    @property
+    def display_name(self):
+        if self.role == self.EMPLOYER:
+            return self.employer_name
+        return self.user.username
 
     def is_job_seeker(self):
         return self.role == self.JOB_SEEKER
 
     def is_employer(self):
         return self.role == self.EMPLOYER
+
+    def save(self, *args, **kwargs):
+        if self.role == self.EMPLOYER and self.company_name:
+            self.company_name = format_employer_name(self.company_name)
+        super().save(*args, **kwargs)
 
 
 class Job(models.Model):
@@ -42,6 +67,10 @@ class Job(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def employer_name(self):
+        return self.employer.profile.employer_name
 
 
 class Application(models.Model):
@@ -77,7 +106,7 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.sender.username} to {self.receiver.username}"
+        return f"{self.sender.profile.display_name} to {self.receiver.profile.display_name}"
 
 
 class Notification(models.Model):
@@ -87,7 +116,7 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Notification for {self.user.username}: {self.text}"
+        return f"Notification for {self.user.profile.display_name}: {self.text}"
 
 
 @receiver(post_save, sender=User)

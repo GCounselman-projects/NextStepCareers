@@ -1,12 +1,22 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Delete Job | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>Delete Job</h1>
-    <p>Are you sure you want to delete the job posting <strong>{{ job.title }}</strong>?</p>
-    <form method="post">{% csrf_token %}
-        <button class="button" type="submit">Yes, delete</button>
-        <a class="button secondary" href="{% url 'dashboard' %}">Cancel</a>
-    </form>
-</div>
+<section class="content-band">
+    <div class="shell form-shell">
+        <div class="form-card">
+            <p class="eyebrow">Confirm action</p>
+            <h1>Delete job</h1>
+            <p>Are you sure you want to delete the job posting <strong>{{ job.title }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="inline-actions">
+                    <button class="button danger" type="submit">Yes, delete</button>
+                    <a class="button secondary iconless" href="{% url 'dashboard' %}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 {% endblock %}

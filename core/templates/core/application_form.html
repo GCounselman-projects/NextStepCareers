@@ -1,12 +1,25 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Apply to {{ job.title }} | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>Apply to {{ job.title }}</h1>
-    <p><strong>Employer:</strong> {{ job.employer.username }}</p>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button class="button" type="submit">Submit Application</button>
-    </form>
-</div>
+<section class="content-band">
+    <div class="shell form-shell">
+        <div class="form-card">
+            <p class="eyebrow">Application</p>
+            <h1>Apply to {{ job.title }}</h1>
+            <dl class="definition-list">
+                <div>
+                    <dt>Employer</dt>
+                    <dd>{{ job.employer_name }}</dd>
+                </div>
+            </dl>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="button" type="submit">Submit application</button>
+            </form>
+        </div>
+    </div>
+</section>
 {% endblock %}

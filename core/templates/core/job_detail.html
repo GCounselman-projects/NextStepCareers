@@ -1,24 +1,56 @@
 {% extends 'core/base.html' %}
 
+{% block title %}{{ job.title }} | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>{{ job.title }}</h1>
-    <p><strong>Employer:</strong> {{ job.employer.username }}</p>
-    <p><strong>Location:</strong> {{ job.location|default:'Remote' }}</p>
-    <p>{{ job.description }}</p>
-    {% if request.user.is_authenticated %}
-        {% if request.user == job.employer %}
-            <div class="inline-actions">
-                <a class="button" href="{% url 'job_edit' job.id %}">Edit</a>
-                <a class="button secondary" href="{% url 'job_delete' job.id %}">Delete</a>
-            </div>
-        {% elif request.user.profile.role == request.user.profile.JOB_SEEKER and not has_applied %}
-            <a class="button" href="{% url 'apply_job' job.id %}">Apply Now</a>
-        {% elif has_applied %}
-            <p><strong>Status:</strong> Application submitted.</p>
-        {% endif %}
-    {% else %}
-        <p><a class="button" href="{% url 'login' %}">Log in</a> to apply.</p>
-    {% endif %}
-</div>
+<section class="content-band">
+    <div class="shell">
+        <div class="detail-layout">
+            <article class="detail-main">
+                <p class="eyebrow">Job detail</p>
+                <h1>{{ job.title }}</h1>
+                <div class="tag-row">
+                    <span class="tag">{{ job.location|default:'Remote' }}</span>
+                    {% if job.is_active %}
+                        <span class="tag">Active</span>
+                    {% endif %}
+                </div>
+                <h2>Description</h2>
+                <p class="description">{{ job.description }}</p>
+            </article>
+
+            <aside class="detail-side" aria-label="Job actions">
+                <dl class="definition-list">
+                    <div>
+                        <dt>Employer</dt>
+                        <dd>{{ job.employer_name }}</dd>
+                    </div>
+                    <div>
+                        <dt>Location</dt>
+                        <dd>{{ job.location|default:'Remote' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Posted</dt>
+                        <dd>{{ job.created_at|date:'Y-m-d' }}</dd>
+                    </div>
+                </dl>
+
+                {% if request.user.is_authenticated %}
+                    {% if request.user == job.employer %}
+                        <div class="inline-actions">
+                            <a class="button" href="{% url 'job_edit' job.id %}">Edit job</a>
+                            <a class="button danger" href="{% url 'job_delete' job.id %}">Delete job</a>
+                        </div>
+                    {% elif request.user.profile.role == request.user.profile.JOB_SEEKER and not has_applied %}
+                        <a class="button" href="{% url 'apply_job' job.id %}">Apply now</a>
+                    {% elif has_applied %}
+                        <p><span class="status-tag">Application submitted</span></p>
+                    {% endif %}
+                {% else %}
+                    <p><a class="button" href="{% url 'login' %}">Log in to apply</a></p>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
 {% endblock %}

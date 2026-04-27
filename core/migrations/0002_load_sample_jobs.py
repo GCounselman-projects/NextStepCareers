@@ -9,21 +9,21 @@ def create_sample_jobs(apps, schema_editor):
 
     employers = [
         {
-            'username': 'green_tech',
+            'username': 'green-tech',
             'email': 'contact@greentech.com',
             'first_name': 'Green',
             'last_name': 'Tech',
-            'company_name': 'GreenTech Solutions',
+            'company_name': 'Green Tech',
         },
         {
-            'username': 'bright_edge',
+            'username': 'bright-edge',
             'email': 'hello@brightedge.com',
             'first_name': 'Bright',
             'last_name': 'Edge',
-            'company_name': 'BrightEdge Media',
+            'company_name': 'Bright Edge',
         },
         {
-            'username': 'horizon_retail',
+            'username': 'horizon-retail',
             'email': 'jobs@horizonretail.com',
             'first_name': 'Horizon',
             'last_name': 'Retail',
@@ -34,33 +34,33 @@ def create_sample_jobs(apps, schema_editor):
             'email': 'careers@finpath.com',
             'first_name': 'Fin',
             'last_name': 'Path',
-            'company_name': 'FinPath Analytics',
+            'company_name': 'FinPath',
         },
         {
-            'username': 'connect_care',
+            'username': 'connect-care',
             'email': 'team@connectcare.com',
             'first_name': 'Connect',
             'last_name': 'Care',
-            'company_name': 'ConnectCare',
+            'company_name': 'Connect Care',
         },
     ]
 
     sample_jobs = [
         {
             'title': 'Software Engineer',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'Remote',
             'description': 'Build and maintain scalable web applications using Python and Django.',
         },
         {
             'title': 'Marketing Coordinator',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Austin, TX',
             'description': 'Support digital marketing campaigns, content creation, and performance tracking.',
         },
         {
             'title': 'Sales Representative',
-            'employer': 'horizon_retail',
+            'employer': 'horizon-retail',
             'location': 'Chicago, IL',
             'description': 'Develop leads, close deals, and manage strong customer relationships.',
         },
@@ -72,49 +72,49 @@ def create_sample_jobs(apps, schema_editor):
         },
         {
             'title': 'Customer Success Specialist',
-            'employer': 'connect_care',
+            'employer': 'connect-care',
             'location': 'Denver, CO',
             'description': 'Help customers onboard, answer support requests, and drive product satisfaction.',
         },
         {
             'title': 'HR Generalist',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Miami, FL',
             'description': 'Manage recruiting, onboarding, employee records, and HR policy support.',
         },
         {
             'title': 'Project Manager',
-            'employer': 'horizon_retail',
+            'employer': 'horizon-retail',
             'location': 'Seattle, WA',
             'description': 'Plan commercial projects, manage schedules, budgets, and team communication.',
         },
         {
             'title': 'UX/UI Designer',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'San Francisco, CA',
             'description': 'Design user interfaces, prototypes, and conduct user research.',
         },
         {
             'title': 'Operations Manager',
-            'employer': 'connect_care',
+            'employer': 'connect-care',
             'location': 'Atlanta, GA',
             'description': 'Oversee daily operations, logistics, and process improvements.',
         },
         {
             'title': 'Content Writer',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Remote',
             'description': 'Produce marketing content, blog posts, and website copy for client campaigns.',
         },
         {
             'title': 'Quality Assurance Tester',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'Boston, MA',
             'description': 'Test web and mobile applications, write test plans, and report defects.',
         },
         {
             'title': 'Social Media Specialist',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Los Angeles, CA',
             'description': 'Create and publish social media content while monitoring audience engagement.',
         },
@@ -126,31 +126,31 @@ def create_sample_jobs(apps, schema_editor):
         },
         {
             'title': 'System Administrator',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'Phoenix, AZ',
             'description': 'Maintain servers, networks, and cloud infrastructure with a focus on reliability.',
         },
         {
             'title': 'Graphic Designer',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Portland, OR',
             'description': 'Design marketing materials, logos, and digital assets for creative campaigns.',
         },
         {
             'title': 'Account Manager',
-            'employer': 'horizon_retail',
+            'employer': 'horizon-retail',
             'location': 'Dallas, TX',
             'description': 'Manage client relationships and ensure campaign deliverables are met.',
         },
         {
             'title': 'Mobile App Developer',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'Remote',
             'description': 'Develop iOS and Android applications using cross-platform technologies.',
         },
         {
             'title': 'Email Marketing Manager',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Philadelphia, PA',
             'description': 'Create email campaigns and optimize open rates and conversions.',
         },
@@ -162,19 +162,19 @@ def create_sample_jobs(apps, schema_editor):
         },
         {
             'title': 'Logistics Coordinator',
-            'employer': 'horizon_retail',
+            'employer': 'horizon-retail',
             'location': 'Houston, TX',
             'description': 'Coordinate shipments, inventory, and carrier communications.',
         },
         {
             'title': 'Recruiter',
-            'employer': 'bright_edge',
+            'employer': 'bright-edge',
             'location': 'Remote',
             'description': 'Source candidates, manage interview scheduling, and support hiring pipelines.',
         },
         {
             'title': 'Technical Support Specialist',
-            'employer': 'connect_care',
+            'employer': 'connect-care',
             'location': 'Newark, NJ',
             'description': 'Troubleshoot customer issues and document resolutions clearly.',
         },
@@ -186,13 +186,13 @@ def create_sample_jobs(apps, schema_editor):
         },
         {
             'title': 'Event Coordinator',
-            'employer': 'connect_care',
+            'employer': 'connect-care',
             'location': 'Denver, CO',
             'description': 'Plan corporate events, manage vendors, and coordinate attendee logistics.',
         },
         {
             'title': 'Junior Web Developer',
-            'employer': 'green_tech',
+            'employer': 'green-tech',
             'location': 'Remote',
             'description': 'Support website development using HTML, CSS, and JavaScript.',
         },
@@ -269,7 +269,7 @@ def reverse_func(apps, schema_editor):
         'Junior Web Developer',
     ]).delete()
 
-    employer_usernames = ['green_tech', 'bright_edge', 'horizon_retail', 'finpath', 'connect_care']
+    employer_usernames = ['green-tech', 'bright-edge', 'horizon-retail', 'finpath', 'connect-care']
     for username in employer_usernames:
         try:
             user = User.objects.get(username=username)

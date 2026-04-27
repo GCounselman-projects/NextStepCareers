@@ -1,37 +1,93 @@
 {% extends 'core/base.html' %}
 
-{% block content %}
-<div class="card">
-    <h1>Find Your Next Opportunity</h1>
-    <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; align-items: end;">
-        <label>Search</label>
-        <input name="q" value="{{ query }}" placeholder="Keyword, title, company">
-        <label>Location</label>
-        <input name="location" value="{{ location }}" placeholder="City or region">
-        <button type="submit" class="button">Search</button>
-    </form>
-</div>
+{% block title %}Jobs | NextStep Careers{% endblock %}
 
-<div class="card">
-    <h2>Job Listings</h2>
-    {% if jobs %}
-        <table>
-            <thead>
-                <tr><th>Title</th><th>Employer</th><th>Location</th><th></th></tr>
-            </thead>
-            <tbody>
+{% block content %}
+<section class="content-band hero-band">
+    <div class="shell hero-grid">
+        <div class="hero-copy">
+            <div>
+                <p class="eyebrow">Career marketplace</p>
+                <h1>Find your next opportunity</h1>
+                <p class="lede">Search active roles, compare employers, and move from discovery to application in a focused workspace built for job seekers and hiring teams.</p>
+            </div>
+            <form method="get" class="search-panel" aria-label="Job search">
+                <div class="field-group">
+                    <label for="id_q">Search</label>
+                    <input id="id_q" name="q" value="{{ query }}" placeholder="Keyword, title, company">
+                </div>
+                <div class="field-group">
+                    <label for="id_location">Location</label>
+                    <input id="id_location" name="location" value="{{ location }}" placeholder="City, region, or remote">
+                </div>
+                <button type="submit" class="button">Search jobs</button>
+            </form>
+        </div>
+
+        <aside class="visual-panel" aria-label="Job market snapshot">
+            <div class="visual-panel-header">
+                <p class="visual-panel-title">Open role signal</p>
+                <span class="visual-panel-code">NS-2026</span>
+            </div>
+            <div class="signal-grid">
+                <div class="signal-tile">
+                    <p class="signal-number">{{ jobs|length }}</p>
+                    <p class="signal-label">Active listings</p>
+                </div>
+                <div class="signal-tile">
+                    <p class="signal-number">48h</p>
+                    <p class="signal-label">Recent activity window</p>
+                </div>
+            </div>
+            <div class="signal-bars" aria-hidden="true">
+                <span class="signal-bar" style="--size: 88%"></span>
+                <span class="signal-bar" style="--size: 64%"></span>
+                <span class="signal-bar" style="--size: 72%"></span>
+                <span class="signal-bar" style="--size: 46%"></span>
+                <span class="signal-bar" style="--size: 58%"></span>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="content-band content-band--gray">
+    <div class="shell">
+        <div class="section-header section-header--split">
+            <div>
+                <p class="eyebrow">Active jobs</p>
+                <h2>Job listings</h2>
+                <p class="lede">Each tile keeps the essentials close: role, employer, location, and the next action.</p>
+            </div>
+            {% if request.user.is_authenticated %}
+                {% if request.user.profile.role == request.user.profile.EMPLOYER %}
+                    <a class="button" href="{% url 'job_create' %}">Post job</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% if jobs %}
+            <div class="job-grid">
                 {% for job in jobs %}
-                    <tr>
-                        <td>{{ job.title }}</td>
-                        <td>{{ job.employer.username }}</td>
-                        <td>{{ job.location|default:'Remote' }}</td>
-                        <td><a class="button secondary" href="{% url 'job_detail' job.id %}">View</a></td>
-                    </tr>
+                    <article class="job-card">
+                        <div class="job-card-header">
+                            <p class="eyebrow">{{ job.created_at|date:'M d, Y' }}</p>
+                            <h3 class="job-title">{{ job.title }}</h3>
+                            <p class="job-meta">{{ job.employer_name }}</p>
+                            <div class="tag-row">
+                                <span class="tag">{{ job.location|default:'Remote' }}</span>
+                                <span class="tag">Active</span>
+                            </div>
+                        </div>
+                        <a class="button tertiary" href="{% url 'job_detail' job.id %}">View role</a>
+                    </article>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No jobs available yet. Check back soon.</p>
-    {% endif %}
-</div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No jobs available yet</h3>
+                <p>Check back soon for new listings.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

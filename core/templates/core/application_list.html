@@ -1,26 +1,42 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Applications | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>Job Applications</h1>
-    {% if applications %}
-        <table>
-            <thead>
-                <tr><th>Applicant</th><th>Job</th><th>Status</th><th>Submitted</th></tr>
-            </thead>
-            <tbody>
-                {% for application in applications %}
-                    <tr>
-                        <td>{{ application.applicant.username }}</td>
-                        <td>{{ application.job.title }}</td>
-                        <td>{{ application.get_status_display }}</td>
-                        <td>{{ application.created_at|date:'Y-m-d H:i' }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No applications found.</p>
-    {% endif %}
-</div>
+<section class="content-band">
+    <div class="shell">
+        <div class="section-header">
+            <p class="eyebrow">Employer review</p>
+            <h1>Job applications</h1>
+            <p class="lede">Review applicant activity across your active job postings.</p>
+        </div>
+
+        <div class="table-panel">
+            {% if applications %}
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Applicant</th><th>Job</th><th>Status</th><th>Submitted</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                                <tr>
+                                    <td>{{ application.applicant.username }}</td>
+                                    <td>{{ application.job.title }}</td>
+                                    <td><span class="status-tag">{{ application.get_status_display }}</span></td>
+                                    <td>{{ application.created_at|date:'Y-m-d H:i' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No applications found</h3>
+                    <p>Applications will appear here once candidates apply.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}

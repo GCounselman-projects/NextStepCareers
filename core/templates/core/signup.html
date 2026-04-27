@@ -1,14 +1,23 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Sign Up | NextStep Careers{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>Sign Up</h1>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button class="button" type="submit">Create Account</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Log in</a>.</p>
-</div>
+<section class="content-band">
+    <div class="shell form-shell">
+        <div class="form-card">
+            <p class="eyebrow">Create account</p>
+            <h1>Sign up</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="button" type="submit">Create account</button>
+            </form>
+            <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Log in</a>.</p>
+        </div>
+    </div>
+</section>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const companyField = document.querySelector('input[name="company_name"]')?.closest('p');

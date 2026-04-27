@@ -1,27 +1,37 @@
 {% extends 'core/base.html' %}
 
-{% block content %}
-<div class="card">
-    <h1>Edit Profile</h1>
-    <form method="post">{% csrf_token %}
-        <h2>Account Name</h2>
-        {{ user_form.as_p }}
-        <h2>Profile Details</h2>
-        {{ profile_form.as_p }}
-        <button class="button" type="submit" name="action" value="update_profile">Save Profile</button>
-    </form>
-</div>
+{% block title %}Profile | NextStep Careers{% endblock %}
 
-<div class="card">
-    <h1>Change Password</h1>
-    <button id="toggle-password" class="button secondary" type="button">Show password change</button>
-    <div id="password-section" style="display: none; margin-top: 16px;">
-        <form method="post">{% csrf_token %}
-            {{ password_form.as_p }}
-            <button class="button secondary" type="submit" name="action" value="change_password">Change Password</button>
-        </form>
+{% block content %}
+<section class="content-band">
+    <div class="shell form-shell">
+        <div class="form-card">
+            <p class="eyebrow">Account profile</p>
+            <h1>Edit profile</h1>
+            <form method="post">
+                {% csrf_token %}
+                <h2>Account name</h2>
+                {{ user_form.as_p }}
+                <h2>Profile details</h2>
+                {{ profile_form.as_p }}
+                <button class="button" type="submit" name="action" value="update_profile">Save profile</button>
+            </form>
+        </div>
+
+        <div class="form-card">
+            <p class="eyebrow">Security</p>
+            <h2>Change password</h2>
+            <button id="toggle-password" class="button secondary iconless" type="button">Show password change</button>
+            <div id="password-section" class="password-section" hidden>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ password_form.as_p }}
+                    <button class="button secondary" type="submit" name="action" value="change_password">Change password</button>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -30,9 +40,8 @@
         if (!toggle || !passwordSection) return;
 
         toggle.addEventListener('click', function () {
-            const isHidden = passwordSection.style.display === 'none';
-            passwordSection.style.display = isHidden ? 'block' : 'none';
-            toggle.textContent = isHidden ? 'Hide password change' : 'Show password change';
+            passwordSection.hidden = !passwordSection.hidden;
+            toggle.textContent = passwordSection.hidden ? 'Show password change' : 'Hide password change';
         });
     });
 </script>

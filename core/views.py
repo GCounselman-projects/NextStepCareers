@@ -15,13 +15,19 @@ from .models import Application, Job, Message, Notification, Profile
 def home(request):
     query = request.GET.get('q', '')
     location = request.GET.get('location', '')
-    jobs = Job.objects.filter(is_active=True).order_by('-created_at')
+    jobs = Job.objects.filter(is_active=True).select_related('employer__profile').order_by('-created_at')
 
     if query:
+        normalized_query = "_".join(query.split())
+        hyphenated_query = "-".join(query.split())
         jobs = jobs.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query) |
-            Q(location__icontains=query)
+            Q(location__icontains=query) |
+            Q(employer__profile__company_name__icontains=query) |
+            Q(employer__username__icontains=query) |
+            Q(employer__username__icontains=normalized_query) |
+            Q(employer__username__icontains=hyphenated_query)
         )
 
     if location:
@@ -108,9 +114,8 @@ def dashboard(request):
     })
 
 
-@login_required
 def job_detail(request, job_id):
-    job = get_object_or_404(Job, pk=job_id)
+    job = get_object_or_404(Job.objects.select_related('employer__profile'), pk=job_id)
     has_applied = False
     if request.user.is_authenticated:
         has_applied = Application.objects.filter(job=job, applicant=request.user).exists()
@@ -165,7 +170,7 @@ def job_delete(request, job_id):
 
 @login_required
 def apply_job(request, job_id):
-    job = get_object_or_404(Job, pk=job_id, is_active=True)
+    job = get_object_or_404(Job.objects.select_related('employer__profile'), pk=job_id, is_active=True)
     if request.user.profile.role != Profile.JOB_SEEKER:
         return HttpResponseForbidden('Only job seekers may apply to jobs.')
 
@@ -203,9 +208,9 @@ def applications_list(request):
 
 @login_required
 def messages_view(request):
-    inbox = Message.objects.filter(receiver=request.user).order_by('-created_at')
-    sent_items = Message.objects.filter(sender=request.user).order_by('-created_at')
-    users = User.objects.exclude(pk=request.user.pk)
+    inbox = Message.objects.filter(receiver=request.user).select_related('sender__profile').order_by('-created_at')
+    sent_items = Message.objects.filter(sender=request.user).select_related('receiver__profile').order_by('-created_at')
+    users = User.objects.select_related('profile').exclude(pk=request.user.pk)
     return render(request, 'core/message_list.html', {
         'inbox': inbox,
         'sent_items': sent_items,
@@ -215,7 +220,7 @@ def messages_view(request):
 
 @login_required
 def send_message(request, receiver_id):
-    receiver = get_object_or_404(User, pk=receiver_id)
+    receiver = get_object_or_404(User.objects.select_related('profile'), pk=receiver_id)
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
@@ -225,7 +230,7 @@ def send_message(request, receiver_id):
             message.save()
             Notification.objects.create(
                 user=receiver,
-                text=f'New message from {request.user.username}.',
+                text=f'New message from {request.user.profile.display_name}.',
             )
             messages.success(request, 'Message sent successfully.')
             return redirect('messages')
