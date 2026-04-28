@@ -7,6 +7,7 @@
     <div class="shell">
         <div class="detail-layout">
             <article class="detail-main">
+                <a class="button tertiary compact iconless page-back-link" href="{{ back_url }}">Back</a>
                 <p class="eyebrow">Job detail</p>
                 <h1>{{ job.title }}</h1>
                 <div class="tag-row">
@@ -38,11 +39,11 @@
                 {% if request.user.is_authenticated %}
                     {% if request.user == job.employer %}
                         <div class="inline-actions">
-                            <a class="button" href="{% url 'job_edit' job.id %}">Edit job</a>
-                            <a class="button danger" href="{% url 'job_delete' job.id %}">Delete job</a>
+                            <a class="button" href="{% url 'job_edit' job.id %}?next={{ request.get_full_path|urlencode }}">Edit job</a>
+                            <a class="button danger" href="{% url 'job_delete' job.id %}?next={{ request.get_full_path|urlencode }}">Delete job</a>
                         </div>
                     {% elif request.user.profile.role == request.user.profile.JOB_SEEKER and not has_applied %}
-                        <a class="button" href="{% url 'apply_job' job.id %}">Apply now</a>
+                        <a class="button" href="{% url 'apply_job' job.id %}?next={{ request.get_full_path|urlencode }}">Apply now</a>
                     {% elif has_applied %}
                         <p><span class="status-tag">Application submitted</span></p>
                     {% endif %}

@@ -60,7 +60,7 @@
             </div>
             {% if request.user.is_authenticated %}
                 {% if request.user.profile.role == request.user.profile.EMPLOYER %}
-                    <a class="button" href="{% url 'job_create' %}">Post job</a>
+                    <a class="button" href="{% url 'job_create' %}?next={{ request.get_full_path|urlencode }}">Post job</a>
                 {% endif %}
             {% endif %}
         </div>
@@ -78,7 +78,7 @@
                                 <span class="tag">Active</span>
                             </div>
                         </div>
-                        <a class="button tertiary" href="{% url 'job_detail' job.id %}">View role</a>
+                        <a class="button tertiary" href="{% url 'job_detail' job.id %}?next={{ request.get_full_path|urlencode }}">View role</a>
                     </article>
                 {% endfor %}
             </div>

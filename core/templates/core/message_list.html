@@ -16,7 +16,7 @@
             {% if users %}
                 <div class="inline-actions">
                     {% for user in users %}
-                        <a class="button tertiary compact" href="{% url 'send_message' user.id %}">{{ user.profile.display_name }}</a>
+                        <a class="button tertiary compact" href="{% url 'send_message' user.id %}?next={{ request.get_full_path|urlencode }}">{{ user.profile.display_name }}</a>
                     {% endfor %}
                 </div>
             {% else %}

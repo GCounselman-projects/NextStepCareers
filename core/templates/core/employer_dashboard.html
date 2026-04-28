@@ -11,7 +11,7 @@
                 <h1>Employer dashboard</h1>
                 <p class="lede">Manage active listings, monitor applications, and keep hiring actions moving.</p>
             </div>
-            <a class="button" href="{% url 'job_create' %}">Post a new job</a>
+            <a class="button" href="{% url 'job_create' %}?next={{ request.get_full_path|urlencode }}">Post a new job</a>
         </div>
 
         <div class="metric-grid">
@@ -27,6 +27,57 @@
                 <p class="metric-caption">Recent notifications</p>
                 <p class="metric-value">{{ notifications|length }}</p>
             </div>
+        </div>
+
+        <div class="table-panel">
+            <div class="table-panel-header">
+                <h2>Search job seekers</h2>
+            </div>
+            <div class="panel panel--compact-search">
+                <form method="get" class="search-panel search-panel--single" aria-label="Job seeker search">
+                    <div class="field-group">
+                        <label for="id_seeker_q">Keywords</label>
+                        <input id="id_seeker_q" name="seeker_q" value="{{ seeker_query }}" placeholder="Name, username, skills, bio, or experience">
+                    </div>
+                    <button type="submit" class="button">Search seekers</button>
+                </form>
+            </div>
+            {% if seeker_query %}
+                {% if seeker_results %}
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Candidate</th><th>Skills</th><th>Profile summary</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for seeker in seeker_results %}
+                                    <tr>
+                                        <td>
+                                            {% if seeker.get_full_name %}
+                                                {{ seeker.get_full_name }}
+                                                <div class="meta-label">{{ seeker.username }}</div>
+                                            {% else %}
+                                                {{ seeker.username }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ seeker.profile.skills|default:'No skills added yet.' }}</td>
+                                        <td>{{ seeker.profile.bio|default:seeker.profile.experience|default:seeker.profile.resume|default:'No profile summary added yet.'|truncatechars:140 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <h3>No matches found</h3>
+                        <p>Try another keyword such as a skill, major, username, or experience term.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <p>Search job seekers by name, username, skills, bio, or experience.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -49,7 +100,7 @@
                                     <td>{{ job.title }}</td>
                                     <td>{{ job.location|default:'Remote' }}</td>
                                     <td>{{ job.created_at|date:'Y-m-d' }}</td>
-                                    <td><a class="button tertiary compact" href="{% url 'job_detail' job.id %}">View</a></td>
+                                    <td><a class="button tertiary compact" href="{% url 'job_detail' job.id %}?next={{ request.get_full_path|urlencode }}">View</a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -66,7 +117,7 @@
         <div class="table-panel">
             <div class="table-panel-header">
                 <h2>Applications received</h2>
-                <a class="button tertiary compact" href="{% url 'applications_list' %}">Open list</a>
+                <a class="button tertiary compact" href="{% url 'applications_list' %}?next={{ request.get_full_path|urlencode }}">Open list</a>
             </div>
             {% if applications %}
                 <div class="table-scroll">

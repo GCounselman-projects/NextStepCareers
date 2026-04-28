@@ -7,9 +7,22 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .forms import ApplicationForm, JobForm, MessageForm, ProfileForm, SignUpForm, UserForm
 from .models import Application, Job, Message, Notification, Profile
+
+
+def get_back_url(request, fallback_url):
+    candidate = request.GET.get('next') or request.POST.get('next')
+    if candidate and url_has_allowed_host_and_scheme(
+        candidate,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return candidate
+    return fallback_url
 
 
 def home(request):
@@ -101,10 +114,24 @@ def dashboard(request):
     if profile.role == Profile.EMPLOYER:
         jobs = Job.objects.filter(employer=request.user).order_by('-created_at')
         applications = Application.objects.filter(job__employer=request.user).order_by('-created_at')
+        seeker_query = request.GET.get('seeker_q', '').strip()
+        seeker_results = None
+        if seeker_query:
+            seeker_results = User.objects.filter(profile__role=Profile.JOB_SEEKER).select_related('profile').filter(
+                Q(username__icontains=seeker_query) |
+                Q(first_name__icontains=seeker_query) |
+                Q(last_name__icontains=seeker_query) |
+                Q(profile__skills__icontains=seeker_query) |
+                Q(profile__bio__icontains=seeker_query) |
+                Q(profile__experience__icontains=seeker_query) |
+                Q(profile__resume__icontains=seeker_query)
+            ).order_by('username').distinct()
         return render(request, 'core/employer_dashboard.html', {
             'jobs': jobs,
             'applications': applications,
             'notifications': notifications,
+            'seeker_query': seeker_query,
+            'seeker_results': seeker_results,
         })
 
     applications = Application.objects.filter(applicant=request.user).order_by('-created_at')
@@ -123,6 +150,7 @@ def job_detail(request, job_id):
     return render(request, 'core/job_detail.html', {
         'job': job,
         'has_applied': has_applied,
+        'back_url': get_back_url(request, reverse('home')),
     })
 
 
@@ -131,6 +159,7 @@ def job_create(request):
     if request.user.profile.role != Profile.EMPLOYER:
         return HttpResponseForbidden('Only employers may create job listings.')
 
+    back_url = get_back_url(request, reverse('dashboard'))
     if request.method == 'POST':
         form = JobForm(request.POST)
         if form.is_valid():
@@ -141,12 +170,17 @@ def job_create(request):
             return redirect('dashboard')
     else:
         form = JobForm()
-    return render(request, 'core/job_form.html', {'form': form, 'title': 'Create Job'})
+    return render(request, 'core/job_form.html', {
+        'form': form,
+        'title': 'Create Job',
+        'back_url': back_url,
+    })
 
 
 @login_required
 def job_edit(request, job_id):
     job = get_object_or_404(Job, pk=job_id, employer=request.user)
+    back_url = get_back_url(request, reverse('job_detail', args=[job.id]))
     if request.method == 'POST':
         form = JobForm(request.POST, instance=job)
         if form.is_valid():
@@ -155,17 +189,25 @@ def job_edit(request, job_id):
             return redirect('dashboard')
     else:
         form = JobForm(instance=job)
-    return render(request, 'core/job_form.html', {'form': form, 'title': 'Edit Job'})
+    return render(request, 'core/job_form.html', {
+        'form': form,
+        'title': 'Edit Job',
+        'back_url': back_url,
+    })
 
 
 @login_required
 def job_delete(request, job_id):
     job = get_object_or_404(Job, pk=job_id, employer=request.user)
+    back_url = get_back_url(request, reverse('job_detail', args=[job.id]))
     if request.method == 'POST':
         job.delete()
         messages.success(request, 'Job listing deleted successfully.')
         return redirect('dashboard')
-    return render(request, 'core/job_confirm_delete.html', {'job': job})
+    return render(request, 'core/job_confirm_delete.html', {
+        'job': job,
+        'back_url': back_url,
+    })
 
 
 @login_required
@@ -174,6 +216,7 @@ def apply_job(request, job_id):
     if request.user.profile.role != Profile.JOB_SEEKER:
         return HttpResponseForbidden('Only job seekers may apply to jobs.')
 
+    back_url = get_back_url(request, reverse('job_detail', args=[job.id]))
     if Application.objects.filter(job=job, applicant=request.user).exists():
         messages.info(request, 'You have already applied to this job.')
         return redirect('job_detail', job_id=job_id)
@@ -194,7 +237,11 @@ def apply_job(request, job_id):
     else:
         form = ApplicationForm()
 
-    return render(request, 'core/application_form.html', {'form': form, 'job': job})
+    return render(request, 'core/application_form.html', {
+        'form': form,
+        'job': job,
+        'back_url': back_url,
+    })
 
 
 @login_required
@@ -203,7 +250,10 @@ def applications_list(request):
         return HttpResponseForbidden('Only employers can manage applications.')
 
     applications = Application.objects.filter(job__employer=request.user).order_by('-created_at')
-    return render(request, 'core/application_list.html', {'applications': applications})
+    return render(request, 'core/application_list.html', {
+        'applications': applications,
+        'back_url': get_back_url(request, reverse('dashboard')),
+    })
 
 
 @login_required
@@ -221,6 +271,7 @@ def messages_view(request):
 @login_required
 def send_message(request, receiver_id):
     receiver = get_object_or_404(User.objects.select_related('profile'), pk=receiver_id)
+    back_url = get_back_url(request, reverse('messages'))
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
@@ -239,6 +290,7 @@ def send_message(request, receiver_id):
     return render(request, 'core/message_form.html', {
         'form': form,
         'receiver': receiver,
+        'back_url': back_url,
     })
 
 

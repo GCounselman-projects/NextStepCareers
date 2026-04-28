@@ -6,10 +6,12 @@
 <section class="content-band">
     <div class="shell form-shell">
         <div class="form-card">
+            <a class="button tertiary compact iconless page-back-link" href="{{ back_url }}">Back</a>
             <p class="eyebrow">Messaging</p>
             <h1>Send message to {{ receiver.profile.display_name }}</h1>
             <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ back_url }}">
                 {{ form.as_p }}
                 <button class="button" type="submit">Send message</button>
             </form>
